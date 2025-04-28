@@ -288,25 +288,8 @@ function initFilters() {
     
     // Initialize print button
     document.getElementById('print-btn').addEventListener('click', () => {
-        createDecksToPrint();
-        
-        // Add a brief delay to ensure the DOM has updated
-        setTimeout(() => {
-            window.print();
-            
-            // After printing dialog is closed, restore the normal view
-            setTimeout(() => {
-                if (gameStarted) {
-                    // If we were in game mode, reset to game view
-                    document.getElementById('print-deck-container').remove();
-                    document.getElementById('game-board').style.display = 'block';
-                } else {
-                    // Otherwise, restore card browser
-                    document.getElementById('print-deck-container').remove();
-                    createCards(currentFilter);
-                }
-            }, 500);
-        }, 100);
+        // Generate PDF with 4×3 grid layout instead of using browser print
+        generateCardsPDF();
     });
     
     // Initialize start/restart button
@@ -334,7 +317,7 @@ function resetGameView() {
     gameStarted = false;
 }
 
-// Function to create decks for printing in a 4×3 grid layout (12 cards per page)
+// Function to create decks for printing in a 4×2 grid layout (8 cards per page)
 function createDecksToPrint() {
     // Create a container for the printable cards (hidden for now)
     const printContainer = document.createElement('div');
@@ -349,13 +332,13 @@ function createDecksToPrint() {
     // Create cards from data for printing (all cards)
     const filteredCards = gameData.cards;
     
-    // Group cards into sets of 12 for printing (4×3 grid)
-    for (let i = 0; i < filteredCards.length; i += 12) {
+    // Group cards into sets of 8 for printing (4×2 grid)
+    for (let i = 0; i < filteredCards.length; i += 8) {
         const cardPageDiv = document.createElement('div');
         cardPageDiv.className = 'card-print-page';
         
-        // Add up to 12 cards per page (4×3 grid)
-        const pageEnd = Math.min(i + 12, filteredCards.length);
+        // Add up to 8 cards per page (4×2 grid)
+        const pageEnd = Math.min(i + 8, filteredCards.length);
         for (let j = i; j < pageEnd; j++) {
             const card = filteredCards[j];
             
@@ -447,9 +430,9 @@ function createDecksToPrint() {
             cardPageDiv.appendChild(printCard);
         }
         
-        // If we have fewer than 12 cards on the last page, add empty placeholder cards
-        if (pageEnd - i < 12) {
-            for (let k = 0; k < 12 - (pageEnd - i); k++) {
+        // If we have fewer than 8 cards on the last page, add empty placeholder cards
+        if (pageEnd - i < 8) {
+            for (let k = 0; k < 8 - (pageEnd - i); k++) {
                 const placeholderCard = document.createElement('div');
                 placeholderCard.className = 'print-card placeholder';
                 placeholderCard.style.visibility = 'hidden';
@@ -461,6 +444,228 @@ function createDecksToPrint() {
     }
     
     printContainer.appendChild(allCardsDiv);
+}
+
+// Function to create a PDF with cards in a 4×3 grid layout
+function generateCardsPDF() {
+    // Get filtered cards
+    const filteredCards = gameData.cards;
+    const { jsPDF } = window.jspdf;
+    
+    // Create a new PDF document (landscape for better fit of 4×3 grid)
+    const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'letter'
+    });
+
+    // Add Cinzel and Open Sans fonts for better matching with the card design
+    // Note: In a real implementation, you'd need to include the font files
+    doc.addFont('helvetica', 'normal');
+    doc.addFont('helvetica', 'bold');
+
+    // PDF dimensions
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    
+    // Margins
+    const margin = 10;
+    
+    // Define card dimensions (4 columns, 3 rows)
+    const cardWidth = (pageWidth - (margin * 2) - (15 * 3)) / 4;  // 3 gaps between cards
+    const cardHeight = (pageHeight - (margin * 2) - (15 * 2)) / 3; // 2 gaps between cards
+    
+    // Color constants from your CSS variables
+    const colors = {
+        questionCardColor: '#4CAF50',
+        actionCardColor: '#FFD700',
+        questionCardDark: '#2E7D32',
+        actionCardDark: '#DAA520',
+        cardText: '#333',
+        cardAnswer: '#666',
+        cardBg: '#fff',
+        headerTextLight: '#fff',
+        headerTextDark: '#333',
+        borderLight: '#ccc'
+    };
+    
+    // Create cards for PDF
+    let cardIndex = 0;
+    let currentPage = 1;
+    
+    // Process all cards
+    while (cardIndex < filteredCards.length) {
+        // Process 12 cards per page (4×3)
+        for (let row = 0; row < 3 && cardIndex < filteredCards.length; row++) {
+            for (let col = 0; col < 4 && cardIndex < filteredCards.length; col++) {
+                const card = filteredCards[cardIndex];
+                const x = margin + (col * (cardWidth + 5));
+                const y = margin + (row * (cardHeight + 5));
+                
+                // Get card type specific colors
+                const isQuestionCard = card.type === 'question';
+                const cardColor = isQuestionCard ? colors.questionCardColor : colors.actionCardColor;
+                const cardDarkColor = isQuestionCard ? colors.questionCardDark : colors.actionCardDark;
+                const headerTextColor = isQuestionCard ? colors.headerTextLight : colors.headerTextDark;
+                
+                // 1. Draw card base with shadow effect
+                // Shadow effect (subtle gray rectangle slightly offset)
+                doc.setFillColor(220, 220, 220);
+                doc.roundedRect(x + 0.8, y + 0.8, cardWidth, cardHeight, 3, 3, 'F');
+                
+                // Draw card background
+                doc.setFillColor(255, 255, 255);
+                doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F');
+                
+                // 2. Add the decorative background pattern (similar to the ::before pseudo-element)
+                // We'll simulate the pattern with a light gray rectangle since we can't add the exact SVG pattern
+                doc.setFillColor(245, 245, 245);
+                doc.setGlobalAlpha(0.3); // Similar to the opacity: 0.5 in your CSS
+                doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F');
+                doc.setGlobalAlpha(1); // Reset transparency
+                
+                // 3. Draw card border (3px in your CSS)
+                if (isQuestionCard) {
+                    doc.setDrawColor(parseInt(colors.questionCardColor.substr(1, 2), 16), 
+                                    parseInt(colors.questionCardColor.substr(3, 2), 16), 
+                                    parseInt(colors.questionCardColor.substr(5, 2), 16));
+                } else {
+                    doc.setDrawColor(parseInt(colors.actionCardColor.substr(1, 2), 16),
+                                    parseInt(colors.actionCardColor.substr(3, 2), 16),
+                                    parseInt(colors.actionCardColor.substr(5, 2), 16));
+                }
+                doc.setLineWidth(1.5); // Thicker border to match the 3px in CSS (scaled down for PDF)
+                doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
+                
+                // 4. Draw header with rounded top corners
+                const headerHeight = cardHeight * 0.12; // Approximating the header height ratio
+                doc.setFillColor(parseInt(cardColor.substr(1, 2), 16),
+                                parseInt(cardColor.substr(3, 2), 16),
+                                parseInt(cardColor.substr(5, 2), 16));
+                
+                // Draw header background with rounded top corners
+                doc.roundedRect(x, y, cardWidth, headerHeight, 3, 3, 'F');
+                // Then cover the bottom rounded corners with a rectangle
+                doc.rect(x, y + headerHeight - 3, cardWidth, 3, 'F');
+                
+                // 5. Add header text with proper styling
+                if (isQuestionCard) {
+                    doc.setTextColor(255, 255, 255); // White text for question cards
+                } else {
+                    doc.setTextColor(51, 51, 51); // Darker text for action cards
+                }
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12); // Slightly larger to match your CSS
+                
+                // Add header text with icon positioning
+                const headerText = card.type.charAt(0).toUpperCase() + card.type.slice(1);
+                doc.text(headerText, x + cardWidth/2, y + headerHeight/2 + 1, { align: 'center' });
+                
+                // 6. Add card content with proper styling
+                doc.setTextColor(51, 51, 51); // Match your card-text color
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                
+                const contentStartY = y + headerHeight + 4;
+                // Word wrap the content
+                const contentLines = doc.splitTextToSize(card.content, cardWidth - 10);
+                doc.text(contentLines, x + 5, contentStartY);
+                
+                // Track the vertical position for subsequent elements
+                let currentY = contentStartY + (contentLines.length * 4.5);
+                
+                // 7. Add options if they exist (with proper styling)
+                if (card.options && card.options.length > 0) {
+                    currentY += 4; // Add space before options
+                    
+                    // Options list styling
+                    const optionsColor = isQuestionCard ? colors.questionCardDark : colors.actionCardDark;
+                    doc.setTextColor(parseInt(optionsColor.substr(1, 2), 16),
+                                    parseInt(optionsColor.substr(3, 2), 16),
+                                    parseInt(optionsColor.substr(5, 2), 16));
+                    doc.setFontSize(9);
+                    
+                    // Add each option with proper formatting
+                    card.options.forEach((option, index) => {
+                        // Add a dashed line separator (except for the first item)
+                        if (index > 0) {
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineDashPattern([1, 1], 0);
+                            doc.line(x + 5, currentY - 2, x + cardWidth - 5, currentY - 2);
+                            doc.setLineDashPattern([0], 0); // Reset to solid line
+                        }
+                        
+                        const optionLines = doc.splitTextToSize(option, cardWidth - 12);
+                        doc.text(optionLines, x + 6, currentY);
+                        currentY += optionLines.length * 4 + 2;
+                    });
+                }
+                
+                // 8. Add decorative content icon (similar to your SVG icons)
+                const iconSize = 10; // Scaled down for PDF
+                const iconX = x + cardWidth/2 - iconSize/2;
+                const iconY = currentY + 5;
+                
+                // Simple circular icon as placeholder (similar to content-icon)
+                if (isQuestionCard) {
+                    doc.setDrawColor(parseInt(colors.questionCardColor.substr(1, 2), 16),
+                                    parseInt(colors.questionCardColor.substr(3, 2), 16),
+                                    parseInt(colors.questionCardColor.substr(5, 2), 16));
+                    doc.setFillColor(parseInt(colors.questionCardColor.substr(1, 2), 16),
+                                    parseInt(colors.questionCardColor.substr(3, 2), 16),
+                                    parseInt(colors.questionCardColor.substr(5, 2), 16));
+                } else {
+                    doc.setDrawColor(parseInt(colors.actionCardDark.substr(1, 2), 16),
+                                    parseInt(colors.actionCardDark.substr(3, 2), 16),
+                                    parseInt(colors.actionCardDark.substr(5, 2), 16));
+                    doc.setFillColor(parseInt(colors.actionCardDark.substr(1, 2), 16),
+                                    parseInt(colors.actionCardDark.substr(3, 2), 16),
+                                    parseInt(colors.actionCardDark.substr(5, 2), 16));
+                }
+                
+                // Draw a simple icon (circle with cross)
+                doc.circle(iconX + iconSize/2, iconY + iconSize/2, iconSize/2, 'S');
+                doc.line(iconX + iconSize/2, iconY, iconX + iconSize/2, iconY + iconSize);
+                doc.line(iconX, iconY + iconSize/2, iconX + iconSize, iconY + iconSize/2);
+                
+                currentY += iconSize + 8;
+                
+                // 9. Add answer section for question cards with proper styling
+                if (isQuestionCard && card.answer) {
+                    // Make sure we don't overflow the card
+                    if (currentY < y + cardHeight - 15) {
+                        // Add the dashed border separator like in your CSS
+                        doc.setDrawColor(200, 200, 200);
+                        doc.setLineDashPattern([1, 1], 0);
+                        doc.line(x + 5, currentY, x + cardWidth - 5, currentY);
+                        doc.setLineDashPattern([0], 0); // Reset to solid line
+                        
+                        currentY += 5;
+                        
+                        // Style for the answer text (matching your card-answer)
+                        doc.setFillColor(245, 245, 245);
+                        doc.rect(x + 5, currentY - 3, cardWidth - 10, 15, 'F');
+                        
+                        doc.setFontSize(8);
+                        doc.setTextColor(102, 102, 102); // Match your var(--card-answer)
+                        const answerLines = doc.splitTextToSize(`Answer: ${card.answer}`, cardWidth - 12);
+                        doc.text(answerLines, x + 6, currentY);
+                    }
+                }
+                
+                cardIndex++;
+            }
+        }
+        
+        // Add a new page if there are more cards to process
+        if (cardIndex < filteredCards.length) {
+            doc.addPage();
+            currentPage++;
+        }
+    }
+    
+    // Save PDF with a descriptive name
+    doc.save('bible-game-cards.pdf');
 }
 
 // When the page loads, create the cards and initialize filters
