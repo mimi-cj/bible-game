@@ -1,0 +1,764 @@
+/* Biblical Board Game Cards Styling */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+    /* Card colors */
+    --question-card-color: #4CAF50;  /* Green for Question cards */
+    --action-card-color: #FFD700;    /* Yellow/Gold for Action cards */
+    --question-card-dark: #2E7D32;
+    --action-card-dark: #DAA520;
+    --card-text: #333;
+    --card-answer: #666;
+    --card-bg: #fff;
+    --header-text: #fff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f0f0f0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    line-height: 1.6;
+    color: var(--card-text);
+    padding: 30px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+.card-display {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* Card Base Styling */
+.card {
+    width: 300px;
+    height: 400px;
+    border-radius: 15px;
+    background: var(--card-bg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Card Header Styling */
+.card-header {
+    padding: 15px;
+    color: var(--header-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.question-card .card-header {
+    background: var(--question-card-color);
+}
+
+.action-card .card-header {
+    background: var(--action-card-color);
+    color: var(--card-text); /* Darker text for yellow background */
+}
+
+.card-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Card Icon Styling */
+.card-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    fill: currentColor;
+}
+
+/* Card Content Styling */
+.card-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow-y: auto;
+}
+
+.card-content p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.question-text {
+    font-size: 18px;
+}
+
+/* Options List Styling */
+.options-list {
+    list-style-type: none;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* Remove any potential overflow behavior */
+    overflow: visible;
+}
+
+.options-list li {
+    font-size: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.options-list li:last-child {
+    border-bottom: none;
+}
+
+.question-card .options-list li {
+    color: var(--question-card-dark);
+}
+
+.action-card .options-list li {
+    color: var(--action-card-dark);
+}
+
+.content-icon {
+    width: 80px;
+    height: 80px;
+    margin-top: 20px;
+    flex-shrink: 0;
+}
+
+.question-card .content-icon {
+    fill: var(--question-card-color);
+}
+
+.action-card .content-icon {
+    fill: var(--action-card-dark);
+}
+
+/* Card Border Styling */
+.question-card {
+    border: 3px solid var(--question-card-color);
+}
+
+.action-card {
+    border: 3px solid var(--action-card-color);
+}
+
+/* Question Card Answer Styling */
+.card-answer {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 10px;
+    color: var(--card-answer);
+    text-align: center;
+    border-top: 1px dashed #ccc;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+/* Biblical Decorative Elements */
+.card::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm0-4a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Controls for displaying and printing cards */
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #555;
+}
+
+.filter-btn {
+    background: #7E57C2;
+}
+
+.filter-btn.active {
+    background: #5E35B1;
+}
+
+/* Controls and Menu Styling */
+.menu-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-btn {
+    padding: 10px 20px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    min-width: 120px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content button, .dropdown-submenu-content button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    border: none;
+    background: none;
+    color: #333;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.dropdown-content button:hover, .dropdown-submenu-content button:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown-submenu {
+    position: relative;
+    width: 100%;
+}
+
+.submenu-title {
+    display: block;
+    padding: 10px 15px;
+    font-weight: bold;
+    color: #333;
+    position: relative;
+}
+
+.submenu-title::after {
+    content: "▶";
+    position: absolute;
+    right: 10px;
+    font-size: 10px;
+}
+
+.dropdown-submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+.dropdown-submenu:hover .dropdown-submenu-content {
+    display: block;
+}
+
+.filter-btn.active {
+    font-weight: bold;
+    background-color: #e6e6e6;
+}
+
+#print-btn {
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        width: 280px;
+        height: 400px;
+    }
+    
+    .card-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .card-content p {
+        font-size: 1rem;
+    }
+    
+    .content-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .options-list li {
+        font-size: 12px;
+    }
+}
+
+/* Game Board and Deck Styling */
+.game-board {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f6f0;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.decks-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 60px;
+}
+
+.deck-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.deck {
+    position: relative;
+    width: 200px;
+    height: 280px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.deck::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    border-radius: 10px;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+.deck::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: #fff;
+    border-radius: 9px;
+    z-index: 0;
+}
+
+.question-deck {
+    background-color: var(--question-card-color);
+    border: 5px solid var(--question-card-dark);
+}
+
+.action-deck {
+    background-color: var(--action-card-color);
+    border: 5px solid var(--action-card-dark);
+}
+
+.deck:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.deck-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    z-index: 2;
+    color: #333;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.drawn-cards {
+    position: relative;
+    min-height: 450px; /* Accommodate full-sized cards */
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 20px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.card-in-deck {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+}
+
+.card-in-drawn {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    width: 300px; /* Same as regular card size */
+    height: 400px; /* Same as regular card size */
+    transition: all 0.5s ease;
+    animation: slide-in 0.6s ease-out;
+    z-index: 1;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Adjust position for previously drawn cards */
+.card-in-drawn:not(:first-child) {
+    z-index: 0; /* Lower z-index for older cards */
+}
+
+/* Position cards in a stacked arrangement */
+.card-in-drawn:nth-child(2) {
+    transform: translateX(-47%) rotate(-3deg) translateY(10px) scale(0.97);
+    opacity: 0.9;
+}
+
+.card-in-drawn:nth-child(3) {
+    transform: translateX(-53%) rotate(2deg) translateY(20px) scale(0.94);
+    opacity: 0.8;
+}
+
+.card-in-drawn:nth-child(4) {
+    transform: translateX(-49%) rotate(-1deg) translateY(30px) scale(0.91);
+    opacity: 0.7;
+}
+
+.card-in-drawn:nth-child(5) {
+    transform: translateX(-51%) rotate(1deg) translateY(40px) scale(0.88);
+    opacity: 0.6;
+}
+
+/* Hide cards beyond the 5th one in the stack */
+.card-in-drawn:nth-child(n+6) {
+    opacity: 0;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(-50px) scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Empty deck styles */
+.deck.empty {
+    background-color: #e0e0e0;
+    border-color: #b0b0b0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.deck.empty::after {
+    opacity: 0.1;
+}
+
+.deck.empty .deck-label::after {
+    content: " (Empty)";
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+    color: #888;
+}
+
+/* Game style modifications */
+.in-game .card-display {
+    display: none;
+}
+
+/* Print styles for decks */
+@media print {
+    .menu-container, h1 {
+        display: none !important;
+    }
+    
+    body {
+        background: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    /* Hide regular content when printing */
+    .game-board, #card-container {
+        display: none !important;
+    }
+    
+    /* Show the print container when printing */
+    #print-deck-container {
+        display: block !important;
+        width: 100%;
+    }
+    
+    /* Style for the cards print layout */
+    .print-all-cards {
+        margin: 0 auto;
+        width: 100%;
+        margin-top: 0.5in;
+    }
+    
+    .card-print-page {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+        grid-auto-rows: min-content; /* Auto adjust row height */
+        gap: 0.15in;
+        page-break-after: always;
+        margin-bottom: 0.2in;
+        width: 100%;
+    }
+    
+    /* Style for printable cards */
+    .print-card {
+        width: 2.5in;
+        min-height: 3.5in;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-bottom: 0.2in;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        position: relative;
+        background-color: var(--card-bg);
+    }
+    
+    /* Card type borders - exactly matching main view */
+    .print-card.question-card {
+        border: 3px solid var(--question-card-color);
+    }
+    
+    .print-card.action-card {
+        border: 3px solid var(--action-card-color);
+    }
+    
+    /* Fix for card headers in print mode */
+    .print-card .card-header {
+        padding: 10px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 40px;
+    }
+    
+    /* Card header colors with specific RGB values */
+    .print-card.question-card .card-header {
+        background-color: rgb(76, 175, 80);
+        color: rgb(255, 255, 255);
+        width: 100% !important;
+    }
+    
+    .print-card.action-card .card-header {
+        background-color: rgb(255, 215, 0);
+        color: rgb(51, 51, 51);
+        width: 100% !important;
+    }
+    
+    /* Fix for header text in print - matching main view styles */
+    .print-card .card-header h2 {
+        font-family: 'Cinzel', serif;
+        font-size: 16px !important;
+        font-weight: 700;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Card icon in header - matching main view */
+    .print-card .card-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        display: inline-block;
+        fill: currentColor;
+        vertical-align: middle;
+    }
+    
+    /* Card content */
+    .print-card .card-content {
+        flex: 1;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        text-align: center;
+        background-color: var(--card-bg);
+        color: var(--card-text);
+    }
+    
+    .print-card .card-content p {
+        font-size: 11px;
+        line-height: 1.4;
+        margin: 0 0 12px 0;
+        color: var(--card-text);
+        text-align: center;
+    }
+    
+    /* Options list */
+    .print-card .options-list {
+        margin: 0;
+        padding: 0;
+        text-align: left;
+        list-style-type: none;
+        width: 100%;
+    }
+    
+    .print-card .options-list li {
+        font-size: 10px;
+        padding: 3px 0;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+    }
+    
+    .print-card.question-card .options-list li {
+        color: var(--question-card-dark);
+    }
+    
+    .print-card.action-card .options-list li {
+        color: var(--action-card-dark);
+    }
+    
+    /* Answer section with specific styling */
+    .print-card .card-answer {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 8px;
+        margin-top: auto;
+        font-size: 8px;
+        color: var(--card-answer);
+        border-top: 1px dashed rgb(204, 204, 204);
+        text-align: left;
+    }
+    
+    /* Content icon */
+    .print-card .content-icon {
+        width: 36px;
+        height: 36px;
+        margin: 10px auto;
+        opacity: 0.8;
+    }
+    
+    .print-card.question-card .content-icon {
+        fill: var(--question-card-color);
+    }
+    
+    .print-card.action-card .content-icon {
+        fill: var(--action-card-dark);
+    }
+    
+    /* Decorative elements */
+    .print-card::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm0-4a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+        border-radius: 8px;
+        z-index: 0;
+    }
+    
+    @page {
+        size: letter portrait;
+        margin: 0.15in;
+    }
+}
