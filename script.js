@@ -459,11 +459,6 @@ function generateCardsPDF() {
         format: 'letter'
     });
 
-    // Add Cinzel and Open Sans fonts for better matching with the card design
-    // Note: In a real implementation, you'd need to include the font files
-    doc.addFont('helvetica', 'normal');
-    doc.addFont('helvetica', 'bold');
-
     // PDF dimensions
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -518,11 +513,11 @@ function generateCardsPDF() {
                 doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F');
                 
                 // 2. Add the decorative background pattern (similar to the ::before pseudo-element)
-                // We'll simulate the pattern with a light gray rectangle since we can't add the exact SVG pattern
+                // We'll simulate the pattern with a light gray rectangle
                 doc.setFillColor(245, 245, 245);
-                doc.setGlobalAlpha(0.3); // Similar to the opacity: 0.5 in your CSS
+                // Use a lower opacity fill by setting a very light gray
+                doc.setFillColor(250, 250, 250);
                 doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F');
-                doc.setGlobalAlpha(1); // Reset transparency
                 
                 // 3. Draw card border (3px in your CSS)
                 if (isQuestionCard) {
@@ -535,6 +530,8 @@ function generateCardsPDF() {
                                     parseInt(colors.actionCardColor.substr(5, 2), 16));
                 }
                 doc.setLineWidth(1.5); // Thicker border to match the 3px in CSS (scaled down for PDF)
+                // Reset to solid line pattern (no dash)
+                doc.setLineDashPattern([0], 0);
                 doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
                 
                 // 4. Draw header with rounded top corners
@@ -554,8 +551,8 @@ function generateCardsPDF() {
                 } else {
                     doc.setTextColor(51, 51, 51); // Darker text for action cards
                 }
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12); // Slightly larger to match your CSS
+                // REDUCED: Header text size from 12 to 11
+                doc.setFontSize(11); 
                 
                 // Add header text with icon positioning
                 const headerText = card.type.charAt(0).toUpperCase() + card.type.slice(1);
@@ -563,16 +560,16 @@ function generateCardsPDF() {
                 
                 // 6. Add card content with proper styling
                 doc.setTextColor(51, 51, 51); // Match your card-text color
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
+                // REDUCED: Content text size from 10 to 8
+                doc.setFontSize(8);
                 
                 const contentStartY = y + headerHeight + 4;
-                // Word wrap the content
-                const contentLines = doc.splitTextToSize(card.content, cardWidth - 10);
+                // Word wrap the content - Added extra padding (reduced width from -10 to -12)
+                const contentLines = doc.splitTextToSize(card.content, cardWidth - 12);
                 doc.text(contentLines, x + 5, contentStartY);
                 
-                // Track the vertical position for subsequent elements
-                let currentY = contentStartY + (contentLines.length * 4.5);
+                // Adjusted line height multiplier for better fit (from 4.5 to 3.7)
+                let currentY = contentStartY + (contentLines.length * 3.7);
                 
                 // 7. Add options if they exist (with proper styling)
                 if (card.options && card.options.length > 0) {
@@ -583,28 +580,32 @@ function generateCardsPDF() {
                     doc.setTextColor(parseInt(optionsColor.substr(1, 2), 16),
                                     parseInt(optionsColor.substr(3, 2), 16),
                                     parseInt(optionsColor.substr(5, 2), 16));
-                    doc.setFontSize(9);
+                    // REDUCED: Option text size from 9 to 7
+                    doc.setFontSize(7);
                     
                     // Add each option with proper formatting
                     card.options.forEach((option, index) => {
-                        // Add a dashed line separator (except for the first item)
+                        // Add a separator line (except for the first item)
                         if (index > 0) {
                             doc.setDrawColor(200, 200, 200);
-                            doc.setLineDashPattern([1, 1], 0);
+                            // Changed to solid line instead of dashed
+                            doc.setLineDashPattern([0], 0);
                             doc.line(x + 5, currentY - 2, x + cardWidth - 5, currentY - 2);
-                            doc.setLineDashPattern([0], 0); // Reset to solid line
                         }
                         
-                        const optionLines = doc.splitTextToSize(option, cardWidth - 12);
+                        // Added extra padding for option text (reduced width from -12 to -14)
+                        const optionLines = doc.splitTextToSize(option, cardWidth - 14);
                         doc.text(optionLines, x + 6, currentY);
-                        currentY += optionLines.length * 4 + 2;
+                        // Adjusted line height multiplier for better fit (from 4+2 to 3.2+2)
+                        currentY += optionLines.length * 3.2 + 2;
                     });
                 }
                 
                 // 8. Add decorative content icon (similar to your SVG icons)
-                const iconSize = 10; // Scaled down for PDF
+                // REDUCED: Icon size from 10 to 8
+                const iconSize = 8;
                 const iconX = x + cardWidth/2 - iconSize/2;
-                const iconY = currentY + 5;
+                const iconY = currentY + 4; // Reduced space above icon from 5 to 4
                 
                 // Simple circular icon as placeholder (similar to content-icon)
                 if (isQuestionCard) {
@@ -628,27 +629,29 @@ function generateCardsPDF() {
                 doc.line(iconX + iconSize/2, iconY, iconX + iconSize/2, iconY + iconSize);
                 doc.line(iconX, iconY + iconSize/2, iconX + iconSize, iconY + iconSize/2);
                 
-                currentY += iconSize + 8;
+                // Reduced space after icon (from 8 to 6)
+                currentY += iconSize + 6;
                 
                 // 9. Add answer section for question cards with proper styling
                 if (isQuestionCard && card.answer) {
                     // Make sure we don't overflow the card
-                    if (currentY < y + cardHeight - 15) {
-                        // Add the dashed border separator like in your CSS
+                    if (currentY < y + cardHeight - 12) { // Reduced buffer from 15 to 12
+                        // Add the border separator - changed from dashed to solid
                         doc.setDrawColor(200, 200, 200);
-                        doc.setLineDashPattern([1, 1], 0);
+                        doc.setLineDashPattern([0], 0); // Solid line instead of dashed
                         doc.line(x + 5, currentY, x + cardWidth - 5, currentY);
-                        doc.setLineDashPattern([0], 0); // Reset to solid line
                         
-                        currentY += 5;
+                        currentY += 4; // Reduced space after separator from 5 to 4
                         
                         // Style for the answer text (matching your card-answer)
                         doc.setFillColor(245, 245, 245);
-                        doc.rect(x + 5, currentY - 3, cardWidth - 10, 15, 'F');
+                        doc.rect(x + 5, currentY - 3, cardWidth - 10, 12); // Reduced height from 15 to 12
                         
-                        doc.setFontSize(8);
+                        // REDUCED: Answer text size from 8 to 6
+                        doc.setFontSize(6);
                         doc.setTextColor(102, 102, 102); // Match your var(--card-answer)
-                        const answerLines = doc.splitTextToSize(`Answer: ${card.answer}`, cardWidth - 12);
+                        // Added extra padding (reduced width from -12 to -14)
+                        const answerLines = doc.splitTextToSize(`Answer: ${card.answer}`, cardWidth - 14);
                         doc.text(answerLines, x + 6, currentY);
                     }
                 }
