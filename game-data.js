@@ -55,10 +55,10 @@ const gameData = {
       "type": "question",
       "content": "What did Paul tell Timothy to do?",
       "options": [
-        "comfort corruption",
-        "face persecution"
+        "a) comfort corruption",
+        "b) face persecution"
       ],
-      "answer": "comfort corruption",
+      "answer": "a) comfort corruption",
       "iconType": "guidance"
     },
     {
