@@ -19,6 +19,7 @@
                 <button class="menu-btn">Game</button>
                 <div class="dropdown-content">
                     <button id="start-btn">Start</button>
+                    <button id="rules-btn">Rules</button>
                 </div>
             </div>
             
@@ -42,6 +43,47 @@
                     <button id="print-btn">Print Decks</button>
                     <button id="print-no-answers-btn">Print Decks without Answers</button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Rules Section (initially hidden) -->
+        <div id="rules-container" class="rules-container" style="display: none;">
+            <div class="rules-content">
+                <h2>Game Rules</h2>
+                
+                <div class="rule-section">
+                    <h3>How to Play</h3>
+                    <p>Each player rolls the dice for every turn they take. If you get an answer wrong, move 2 spaces back. If you get it right, you may stay on the square you are on.</p>
+                </div>
+                
+                <div class="rule-section">
+                    <h3>Cards and Spaces</h3>
+                    <ul>
+                        <li><strong>?</strong> space: Players must pick up a mystery card from the deck and read it out loud.</li>
+                        <li><strong>!</strong> space: Players may move 3 spaces forwards (normal mode) or choose a person to pick a mystery card (hard mode).</li>
+                        <li><strong>🔕</strong> space: The next player to play skips a turn.</li>
+                        <li><strong>🕸️</strong> space: On their next turn, the player must skip a turn.</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-section">
+                    <h3>Game Modes</h3>
+                    <div class="game-mode">
+                        <h4>Normal Mode</h4>
+                        <p>The "!" space allows the player to move 3 spaces forwards.</p>
+                    </div>
+                    <div class="game-mode">
+                        <h4>Hard Mode</h4>
+                        <p>The "!" space allows the player to choose a person to pick a mystery card.</p>
+                    </div>
+                </div>
+                
+                <div class="rule-section">
+                    <h3>Reward</h3>
+                    <p>At the end of the game, the first person to reach the finish line gets to pick up a card for the last person that made it and read it out loud so they can hear. If they get it wrong, then that person has sinned.</p>
+                </div>
+                
+                <button id="close-rules-btn" class="btn">Close Rules</button>
             </div>
         </div>
         

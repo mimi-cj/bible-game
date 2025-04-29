@@ -298,6 +298,18 @@ function initFilters() {
         generateCardsPDF(false);
     });
     
+    // Initialize rules button
+    document.getElementById('rules-btn').addEventListener('click', () => {
+        // Show rules container
+        document.getElementById('rules-container').style.display = 'flex';
+    });
+    
+    // Initialize close rules button
+    document.getElementById('close-rules-btn').addEventListener('click', () => {
+        // Hide rules container
+        document.getElementById('rules-container').style.display = 'none';
+    });
+    
     // Initialize start/restart button
     document.getElementById('start-btn').addEventListener('click', () => {
         if (gameStarted) {
