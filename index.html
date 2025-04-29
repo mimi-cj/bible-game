@@ -19,6 +19,7 @@
                 <button class="menu-btn">Game</button>
                 <div class="dropdown-content">
                     <button id="start-btn">Start</button>
+                    <button id="online-game-btn">Online Game</button>
                     <button id="rules-btn">Rules</button>
                 </div>
             </div>
@@ -102,6 +103,103 @@
                         <div class="deck-label">Actions</div>
                     </div>
                     <div id="action-drawn" class="drawn-cards"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Online Game Section (initially hidden) -->
+        <div id="online-game-container" class="online-game-container" style="display: none;">
+            <div class="online-game-content">
+                <h2>Online Bible Game</h2>
+                
+                <!-- Player Setup Form (shown first) -->
+                <div id="player-setup" class="player-setup">
+                    <h3>Player Setup</h3>
+                    <p>Enter 2-5 players to start the game:</p>
+                    
+                    <div class="player-inputs">
+                        <div class="player-input">
+                            <label for="player1">Player 1:</label>
+                            <input type="text" id="player1" placeholder="Nickname" required>
+                            <div class="pawn-color" style="background-color: #FF5252;">1</div>
+                        </div>
+                        <div class="player-input">
+                            <label for="player2">Player 2:</label>
+                            <input type="text" id="player2" placeholder="Nickname" required>
+                            <div class="pawn-color" style="background-color: #2196F3;">2</div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-controls">
+                        <button id="add-player-btn" class="btn">Add Player</button>
+                        <button id="remove-player-btn" class="btn" disabled>Remove Player</button>
+                    </div>
+                    
+                    <div class="game-mode-selector">
+                        <h4>Game Mode:</h4>
+                        <label>
+                            <input type="radio" name="game-mode" value="normal" checked>
+                            Normal Mode
+                        </label>
+                        <label>
+                            <input type="radio" name="game-mode" value="hard">
+                            Hard Mode
+                        </label>
+                    </div>
+                    
+                    <button id="start-online-game-btn" class="btn">Start Game</button>
+                </div>
+                
+                <!-- Game Board (shown after setup) -->
+                <div id="board-game-container" class="board-game-container" style="display: none;">
+                    <div class="game-status">
+                        <div id="current-player-info" class="current-player-info">
+                            <span class="current-player-label">Current Turn:</span>
+                            <span id="current-player-name">Player Name</span>
+                            <div id="current-player-pawn" class="pawn"></div>
+                        </div>
+                        <div id="game-message" class="game-message"></div>
+                    </div>
+                    
+                    <!-- Reordering to place board on top and controls at bottom -->
+                    <div id="game-board-grid" class="game-board-grid">
+                        <!-- Game board will be dynamically generated here -->
+                    </div>
+                    
+                    <div id="online-card-display" class="online-card-display">
+                        <!-- Cards will be displayed here when drawn -->
+                    </div>
+                    
+                    <div class="game-controls">
+                        <div class="players-status">
+                            <h3>Players</h3>
+                            <div id="players-list" class="players-list">
+                                <!-- Player statuses will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="dice-container">
+                            <div id="dice" class="dice">
+                                <div class="dice-cube">
+                                    <div class="dice-face front">1</div>
+                                    <div class="dice-face back">6</div>
+                                    <div class="dice-face right">3</div>
+                                    <div class="dice-face left">4</div>
+                                    <div class="dice-face top">5</div>
+                                    <div class="dice-face bottom">2</div>
+                                </div>
+                            </div>
+                            <button id="roll-dice-btn" class="btn">Roll Dice</button>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <button id="draw-card-btn" class="btn" disabled>Draw Card</button>
+                            <button id="answer-correct-btn" class="btn answer-btn" disabled>Correct Answer</button>
+                            <button id="answer-wrong-btn" class="btn answer-btn" disabled>Wrong Answer</button>
+                        </div>
+                        
+                        <button id="end-game-btn" class="btn">End Game</button>
+                    </div>
                 </div>
             </div>
         </div>
