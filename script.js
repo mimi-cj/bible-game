@@ -286,10 +286,16 @@ function initFilters() {
         });
     });
     
-    // Initialize print button
+    // Initialize print button with answers
     document.getElementById('print-btn').addEventListener('click', () => {
-        // Generate PDF with 4×3 grid layout instead of using browser print
-        generateCardsPDF();
+        // Generate PDF with answers
+        generateCardsPDF(true);
+    });
+    
+    // Initialize print button without answers
+    document.getElementById('print-no-answers-btn').addEventListener('click', () => {
+        // Generate PDF without answers
+        generateCardsPDF(false);
     });
     
     // Initialize start/restart button
@@ -447,7 +453,7 @@ function createDecksToPrint() {
 }
 
 // Function to create a PDF with cards in a 4×3 grid layout
-function generateCardsPDF() {
+function generateCardsPDF(showAnswers = true) {
     // Get filtered cards
     const filteredCards = gameData.cards;
     const { jsPDF } = window.jspdf;
@@ -616,11 +622,14 @@ function generateCardsPDF() {
                 // Further reduced space after icon (from 6 to 5)
                 currentY += iconSize + 5;
                 
-                // Add answer section for question cards with proper styling
-                if (isQuestionCard && card.answer) {
+                // Add answer section for question cards with proper styling (only if showAnswers is true)
+                if (showAnswers && isQuestionCard && card.answer) {
                     // Make sure we don't overflow the card
-                    if (currentY < y + cardHeight - 10) { // Reduced buffer from 12 to 10                       
+                    if (currentY < y + cardHeight - 10) { // Reduced buffer from 12 to 10                        
                         currentY += 3.5; // Reduced space after separator from 4 to 3.5
+                        
+                        // Style for the answer text (matching your card-answer)
+                        doc.setFillColor(248, 248, 248); // Lighter gray background
                         
                         // FURTHER REDUCED: Answer text size from 6 to 5.5
                         doc.setFontSize(5.5);
@@ -643,7 +652,8 @@ function generateCardsPDF() {
     }
     
     // Save PDF with a descriptive name
-    doc.save('bible-game-cards.pdf');
+    const fileName = showAnswers ? 'bible-game-cards.pdf' : 'bible-game-cards-no-answers.pdf';
+    doc.save(fileName);
 }
 
 // When the page loads, create the cards and initialize filters
